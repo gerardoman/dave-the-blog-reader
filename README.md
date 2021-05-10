@@ -42,12 +42,15 @@ docker exec jenkins cat /var/jenkins_home/secrets/initialAdminPassword
 - NodeJS Plugin;
 - Performance Plugin.
 
-5) Run the following command in Jenkins script console:
+5) In "Global Tool Configuration" add a NodeJS installment:
+![alt text](https://raw.githubusercontent.com/gerardoman/dave-the-blog-reader/main/readme/NodeJS.png)
+
+6) Run the following command in Jenkins script console:
 ```sh
 System.setProperty( "hudson.model.DirectoryBrowserSupport.CSP" , "" )
 ```
 
-6) You can now build your pipeline!
+7) You can now build your pipeline!
 
 ## Expected Results
 
