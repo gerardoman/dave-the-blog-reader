@@ -1,0 +1,542 @@
+{
+	"info": {
+		"_postman_id": "5aa00435-b78f-4e37-b85b-03fbfa5b2be7",
+		"name": "Photos",
+		"description": "Test photo lifecycle from insertion to deletion. ",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get all photos",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", pm.response.to.have.status(200));",
+							"",
+							"const responseJson = pm.response.json();",
+							"",
+							"pm.test(\"The response is an array with 5000 elements\", () => {",
+							"",
+							"    pm.expect(responseJson).to.be.an(\"array\");",
+							"    pm.expect(responseJson.length).to.be.equal(5000);",
+							"",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}{{photos}}",
+					"host": [
+						"{{host}}{{photos}}"
+					]
+				},
+				"description": "Obtain all existing comments."
+			},
+			"response": []
+		},
+		{
+			"name": "Get one photo",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", pm.response.to.have.status(200));",
+							"",
+							"const responseJson = pm.response.json();",
+							"",
+							"pm.test(\"The response contains photo with id 5000\", () => {",
+							"",
+							"    pm.expect(responseJson.title).to.be.equal(\"error quasi sunt cupiditate voluptate ea odit beatae\");",
+							"    pm.expect(responseJson.url).to.be.equal(\"https://via.placeholder.com/600/6dd9cb\");",
+							"    pm.expect(responseJson.thumbnailUrl).to.be.equal(\"https://via.placeholder.com/150/6dd9cb\");",
+							"    pm.expect(responseJson.albumId).to.be.equal(100);",
+							"    pm.expect(responseJson.id).to.be.equal(5000);",
+							"",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}{{photos}}/5000",
+					"host": [
+						"{{host}}{{photos}}"
+					],
+					"path": [
+						"5000"
+					]
+				},
+				"description": "Obtain a photo."
+			},
+			"response": []
+		},
+		{
+			"name": "Get one photo (Parameterized)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", pm.response.to.have.status(200));",
+							"",
+							"const responseJson = pm.response.json();",
+							"",
+							"pm.test(\"The response contains only a photo (with id 5000)\", () => {",
+							"",
+							"    pm.expect(responseJson).to.be.an(\"array\");",
+							"    pm.expect(responseJson.length).to.equal(1);",
+							"    ",
+							"    pm.expect(responseJson[0].title).to.be.equal(\"error quasi sunt cupiditate voluptate ea odit beatae\");",
+							"    pm.expect(responseJson[0].url).to.be.equal(\"https://via.placeholder.com/600/6dd9cb\");",
+							"    pm.expect(responseJson[0].thumbnailUrl).to.be.equal(\"https://via.placeholder.com/150/6dd9cb\");",
+							"    pm.expect(responseJson[0].albumId).to.be.equal(100);",
+							"    pm.expect(responseJson[0].id).to.be.equal(5000);",
+							"",
+							"});",
+							"",
+							"const i = Number(pm.variables.get(\"i\")) + 1;",
+							"const queryParams = pm.variables.get(\"queryParameters\");",
+							"const length = queryParams.length;",
+							"",
+							"if(i < length) {",
+							"    pm.variables.set(\"i\", i);",
+							"    postman.setNextRequest(\"Get one photo (Parameterized)\");",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var i = 0;",
+							"",
+							"if(pm.variables.has(\"i\")) {",
+							"    i = Number(pm.variables.get(\"i\"))",
+							"} else {",
+							"    pm.variables.set(\"i\", i);   ",
+							"}",
+							"",
+							"const queryParams = [   \"id=5000\", ",
+							"                        \"title=error%20quasi%20sunt%20cupiditate%20voluptate%20ea%20odit%20beatae\", ",
+							"                        \"url=https://via.placeholder.com/600/6dd9cb\", ",
+							"                        \"thumbnailUrl=https://via.placeholder.com/150/6dd9cb\",",
+							"                        \"title=error%20quasi%20sunt%20cupiditate%20voluptate%20ea%20odit%20beatae&url=https://via.placeholder.com/600/6dd9cb\", ",
+							"                        \"albumId=100&id=5000\",",
+							"                        \"albumId=100&id=5000&title=error%20quasi%20sunt%20cupiditate%20voluptate%20ea%20odit%20beatae\",",
+							"                        \"albumId=100&id=5000&title=error%20quasi%20sunt%20cupiditate%20voluptate%20ea%20odit%20beatae&url=https://via.placeholder.com/600/6dd9cb&thumbnailUrl=https://via.placeholder.com/150/6dd9cb\"",
+							"                    ];",
+							"",
+							"pm.variables.set(\"queryParameters\", queryParams);",
+							"",
+							"const lenght = queryParams.length",
+							"",
+							"if(i < lenght) { ",
+							"    pm.variables.set(\"queryParameter\", queryParams[i]);",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}{{photos}}?{{queryParameter}}",
+					"host": [
+						"{{host}}{{photos}}"
+					],
+					"query": [
+						{
+							"key": "{{queryParameter}}",
+							"value": null
+						}
+					]
+				},
+				"description": "Obtain a photo filtering by combinations of its title, its url, its thumbnailUrl and its albumId."
+			},
+			"response": []
+		},
+		{
+			"name": "Insert one photo",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.variables.set(\"albumId\", _.random(1, 1000));"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", pm.response.to.have.status(201));",
+							"",
+							"const responseJson = pm.response.json();",
+							"",
+							"pm.test(\"The response contains new photos\", () => {",
+							"",
+							"    pm.expect(responseJson.title).to.be.equal(\"Test Title\");",
+							"    pm.expect(responseJson.url).to.be.equal(\"Test URL\");",
+							"    pm.expect(responseJson.thumbnailUrl).to.be.equal(\"Test Thumbnail URL\");",
+							"    pm.expect(responseJson.albumId).to.be.equal(pm.variables.get(\"albumId\"));",
+							"    pm.expect(responseJson.id).to.be.equal(5001);",
+							"",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"albumId\": {{albumId}},\n    \"title\": \"Test Title\",\n    \"url\": \"Test URL\",\n    \"thumbnailUrl\": \"Test Thumbnail URL\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}{{photos}}",
+					"host": [
+						"{{host}}{{photos}}"
+					]
+				},
+				"description": "Inserts a photo."
+			},
+			"response": []
+		},
+		{
+			"name": "Edit one photo",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.variables.set(\"albumId\", _.random(1, 1000));"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", pm.response.to.have.status(200));",
+							"",
+							"const responseJson = pm.response.json();",
+							"",
+							"pm.test(\"The response contains updated photo\", () => {",
+							"",
+							"    pm.expect(responseJson.title).to.be.equal(\"Test Title\");",
+							"    pm.expect(responseJson.url).to.be.equal(\"Test URL\");",
+							"    pm.expect(responseJson.thumbnailUrl).to.be.equal(\"Test Thumbnail URL\");",
+							"    pm.expect(responseJson.albumId).to.be.equal(pm.variables.get(\"albumId\"));",
+							"    pm.expect(responseJson.id).to.be.equal(5000);",
+							"",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"albumId\": {{albumId}},\n    \"title\": \"Test Title\",\n    \"url\": \"Test URL\",\n    \"thumbnailUrl\": \"Test Thumbnail URL\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}{{photos}}/5000",
+					"host": [
+						"{{host}}{{photos}}"
+					],
+					"path": [
+						"5000"
+					]
+				},
+				"description": "Replaces a photo."
+			},
+			"response": []
+		},
+		{
+			"name": "Inline edit one photo (Parameterized)",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var i = 0;",
+							"",
+							"if(pm.variables.has(\"i\")) {",
+							"    i = Number(pm.variables.get(\"i\"))",
+							"} else {",
+							"    pm.variables.set(\"i\", i);   ",
+							"}",
+							"",
+							"const keys = [   \"albumId\", ",
+							"                 \"title\", ",
+							"                 \"url\",",
+							"                 \"thumbnailUrl\"",
+							"             ];",
+							"",
+							"pm.variables.set(\"keys\", keys);",
+							"",
+							"const lenght = keys.length",
+							"",
+							"if(i < lenght) { ",
+							"    pm.variables.set(\"key\", keys[i]);",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", pm.response.to.have.status(200));",
+							"",
+							"const responseJson = pm.response.json();",
+							"var key = pm.variables.get(\"key\");",
+							"",
+							"pm.test(\"The response contains updated photo\", () => {",
+							"    ",
+							"    pm.expect(responseJson.id).to.be.equal(5000);",
+							"",
+							"    if(key===\"albumId\") {",
+							"        pm.expect(responseJson.title).to.be.equal(\"error quasi sunt cupiditate voluptate ea odit beatae\");",
+							"        pm.expect(responseJson.url).to.be.equal(\"https://via.placeholder.com/600/6dd9cb\");",
+							"        pm.expect(responseJson.thumbnailUrl).to.be.equal(\"https://via.placeholder.com/150/6dd9cb\");",
+							"        pm.expect(responseJson.albumId).to.be.equal(\"Test\");",
+							"    }",
+							"",
+							"    if(key===\"title\") {",
+							"        pm.expect(responseJson.title).to.be.equal(\"Test\");",
+							"        pm.expect(responseJson.url).to.be.equal(\"https://via.placeholder.com/600/6dd9cb\");",
+							"        pm.expect(responseJson.thumbnailUrl).to.be.equal(\"https://via.placeholder.com/150/6dd9cb\");",
+							"        pm.expect(responseJson.albumId).to.be.equal(100);",
+							"    }",
+							"",
+							"    if(key===\"url\") {",
+							"        pm.expect(responseJson.title).to.be.equal(\"error quasi sunt cupiditate voluptate ea odit beatae\");",
+							"        pm.expect(responseJson.url).to.be.equal(\"Test\");",
+							"        pm.expect(responseJson.thumbnailUrl).to.be.equal(\"https://via.placeholder.com/150/6dd9cb\");",
+							"        pm.expect(responseJson.albumId).to.be.equal(100);",
+							"    }",
+							"",
+							"    if(key===\"thumbnailUrl\") {",
+							"        pm.expect(responseJson.title).to.be.equal(\"error quasi sunt cupiditate voluptate ea odit beatae\");",
+							"        pm.expect(responseJson.url).to.be.equal(\"https://via.placeholder.com/600/6dd9cb\");",
+							"        pm.expect(responseJson.thumbnailUrl).to.be.equal(\"Test\");",
+							"        pm.expect(responseJson.albumId).to.be.equal(100);",
+							"    }",
+							"",
+							"",
+							"});",
+							"",
+							"const i = Number(pm.variables.get(\"i\")) + 1;",
+							"const keys = pm.variables.get(\"keys\");",
+							"const length = keys.length;",
+							"",
+							"if(i < length) {",
+							"    pm.variables.set(\"i\", i);",
+							"    postman.setNextRequest(\"Inline edit one photo (Parameterized)\");",
+							"}",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"{{key}}\": \"Test\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}{{photos}}/5000",
+					"host": [
+						"{{host}}{{photos}}"
+					],
+					"path": [
+						"5000"
+					]
+				},
+				"description": "Edits a photo albumId, title, url and thumbnailUrl."
+			},
+			"response": []
+		},
+		{
+			"name": "Delete one photo",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", pm.response.to.have.status(200));",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{host}}{{comments}}/500",
+					"host": [
+						"{{host}}{{comments}}"
+					],
+					"path": [
+						"500"
+					]
+				},
+				"description": "Deletes a photo."
+			},
+			"response": []
+		},
+		{
+			"name": "Get one album photos",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", pm.response.to.have.status(200));",
+							"",
+							"const responseJson = pm.response.json();",
+							"",
+							"pm.test(\"The response is an array with 50 photos\", () => {",
+							"",
+							"    pm.expect(responseJson).to.be.an(\"array\");",
+							"    pm.expect(responseJson.length).to.be.equal(50);",
+							"",
+							"});",
+							"",
+							"pm.test(\"All photos are from this album\", () => {",
+							"    _.each(responseJson, (post) => {",
+							"",
+							"        pm.expect(post.albumId).to.be.equal(100)",
+							"        ",
+							"    })",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}{{albums}}/100{{photos}}",
+					"host": [
+						"{{host}}{{albums}}"
+					],
+					"path": [
+						"100{{photos}}"
+					]
+				},
+				"description": "Obtain albums from user."
+			},
+			"response": []
+		},
+		{
+			"name": "Get one photo (404)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404\", pm.response.to.have.status(404));"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}{{photos}}/5001",
+					"host": [
+						"{{host}}{{photos}}"
+					],
+					"path": [
+						"5001"
+					]
+				},
+				"description": "Try to obtain a photo."
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

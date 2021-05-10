@@ -1,0 +1,180 @@
+{
+	"info": {
+		"_postman_id": "c87f3325-ae9f-4511-9ad7-597a4d84a4fb",
+		"name": "Find-other-posts-by-the-author",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Save author id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", pm.response.to.have.status(200));",
+							"",
+							"const responseJson = pm.response.json();",
+							"",
+							"pm.test(\"The response is an array with one post\", () => {",
+							"",
+							"    pm.expect(responseJson).to.be.an(\"array\");",
+							"    pm.expect(responseJson.length).to.equal(1);",
+							"",
+							"});",
+							"",
+							"const post = responseJson[0];",
+							"",
+							"pm.test(\"The retrieved post has the requested title\", () => {",
+							"",
+							"    pm.expect(post.title).to.be.equal(\"rem alias distinctio quo quis\");",
+							"",
+							"});",
+							"",
+							"pm.variables.set(\"author\", post.userId);",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}{{posts}}?title=rem%20alias%20distinctio%20quo%20quis",
+					"host": [
+						"{{host}}{{posts}}"
+					],
+					"query": [
+						{
+							"key": "title",
+							"value": "rem%20alias%20distinctio%20quo%20quis"
+						}
+					]
+				},
+				"description": "Find the author of \"rem alias distinctio quo quis\"."
+			},
+			"response": []
+		},
+		{
+			"name": "(Approach #1) Get author posts",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", pm.response.to.have.status(200));",
+							"",
+							"const responseJson = pm.response.json();",
+							"const author = pm.variables.get(\"author\");",
+							"",
+							"pm.test(\"The response is an array with at least one post\", () => {",
+							"",
+							"    pm.expect(responseJson).to.be.an(\"array\");",
+							"    pm.expect(responseJson.length).to.be.above(0);",
+							"",
+							"});",
+							"",
+							"pm.test(\"All posts are from this author\", () => {",
+							"    _.each(responseJson, (post) => {",
+							"",
+							"        pm.expect(post.userId).to.be.equal(author)",
+							"        ",
+							"    })",
+							"})",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}{{posts}}?userId={{author}}",
+					"host": [
+						"{{host}}{{posts}}"
+					],
+					"query": [
+						{
+							"key": "userId",
+							"value": "{{author}}"
+						}
+					]
+				},
+				"description": "Find the author of \"rem alias distinctio quo quis\"."
+			},
+			"response": []
+		},
+		{
+			"name": "(Approach #2) Get author posts",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", pm.response.to.have.status(200));",
+							"",
+							"const responseJson = pm.response.json();",
+							"const author = pm.variables.get(\"author\");",
+							"",
+							"pm.test(\"The response is an array with at least one post\", () => {",
+							"",
+							"    pm.expect(responseJson).to.be.an(\"array\");",
+							"    pm.expect(responseJson.length).to.be.above(0);",
+							"",
+							"});",
+							"",
+							"pm.test(\"All posts are from this author\", () => {",
+							"    _.each(responseJson, (post) => {",
+							"",
+							"        pm.expect(post.userId).to.be.equal(author)",
+							"        ",
+							"    })",
+							"})",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}{{users}}/{{author}}{{posts}}",
+					"host": [
+						"{{host}}{{users}}"
+					],
+					"path": [
+						"{{author}}{{posts}}"
+					]
+				},
+				"description": "Find the author of \"rem alias distinctio quo quis\"."
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

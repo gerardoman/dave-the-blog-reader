@@ -1,0 +1,540 @@
+{
+	"info": {
+		"_postman_id": "7c29688c-2bd1-466b-90d2-64b3135c8af4",
+		"name": "Comments",
+		"description": "Test comment lifecycle from insertion to deletion. ",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get all comments",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", pm.response.to.have.status(200));",
+							"",
+							"const responseJson = pm.response.json();",
+							"",
+							"pm.test(\"The response is an array with 500 elements\", () => {",
+							"",
+							"    pm.expect(responseJson).to.be.an(\"array\");",
+							"    pm.expect(responseJson.length).to.be.equal(500);",
+							"",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}{{comments}}",
+					"host": [
+						"{{host}}{{comments}}"
+					]
+				},
+				"description": "Obtain all existing comments."
+			},
+			"response": []
+		},
+		{
+			"name": "Get one comment",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", pm.response.to.have.status(200));",
+							"",
+							"const responseJson = pm.response.json();",
+							"",
+							"pm.test(\"The response contains comment with id 500\", () => {",
+							"",
+							"    pm.expect(responseJson.name).to.be.equal(\"ex eaque eum natus\");",
+							"    pm.expect(responseJson.email).to.be.equal(\"Emma@joanny.ca\");",
+							"    pm.expect(responseJson.body).to.be.equal(\"perspiciatis quis doloremque\\nveniam nisi eos velit sed\\nid totam inventore voluptatem laborum et eveniet\\naut aut aut maxime quia temporibus ut omnis\");",
+							"    pm.expect(responseJson.postId).to.be.equal(100);",
+							"    pm.expect(responseJson.id).to.be.equal(500);",
+							"",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}{{comments}}/500",
+					"host": [
+						"{{host}}{{comments}}"
+					],
+					"path": [
+						"500"
+					]
+				},
+				"description": "Obtain a comment."
+			},
+			"response": []
+		},
+		{
+			"name": "Get one comment (Parameterized)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", pm.response.to.have.status(200));",
+							"",
+							"const responseJson = pm.response.json();",
+							"",
+							"pm.test(\"The response contains only a comment (with id 500)\", () => {",
+							"",
+							"    pm.expect(responseJson).to.be.an(\"array\");",
+							"    pm.expect(responseJson.length).to.equal(1);",
+							"    ",
+							"    pm.expect(responseJson[0].name).to.be.equal(\"ex eaque eum natus\");",
+							"    pm.expect(responseJson[0].email).to.be.equal(\"Emma@joanny.ca\");",
+							"    pm.expect(responseJson[0].body).to.be.equal(\"perspiciatis quis doloremque\\nveniam nisi eos velit sed\\nid totam inventore voluptatem laborum et eveniet\\naut aut aut maxime quia temporibus ut omnis\");",
+							"    pm.expect(responseJson[0].postId).to.be.equal(100);",
+							"    pm.expect(responseJson[0].id).to.be.equal(500);",
+							"",
+							"});",
+							"",
+							"const i = Number(pm.variables.get(\"i\")) + 1;",
+							"const queryParams = pm.variables.get(\"queryParameters\");",
+							"const length = queryParams.length;",
+							"",
+							"if(i < length) {",
+							"    pm.variables.set(\"i\", i);",
+							"    postman.setNextRequest(\"Get one comment (Parameterized)\");",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var i = 0;",
+							"",
+							"if(pm.variables.has(\"i\")) {",
+							"    i = Number(pm.variables.get(\"i\"))",
+							"} else {",
+							"    pm.variables.set(\"i\", i);   ",
+							"}",
+							"",
+							"const queryParams = [   \"id=500\", ",
+							"                        \"name=ex%20eaque%20eum%20natus\", ",
+							"                        \"email=Emma@joanny.ca\", ",
+							"                        \"name=ex%20eaque%20eum%20natus&email=Emma@joanny.ca\", ",
+							"                        \"postId=100&id=500\",",
+							"                        \"postId=100&id=500&email=Emma@joanny.ca\",",
+							"                        \"postId=100&id=500&email=Emma@joanny.ca&name=ex%20eaque%20eum%20natus\"",
+							"                    ];",
+							"",
+							"pm.variables.set(\"queryParameters\", queryParams);",
+							"",
+							"const lenght = queryParams.length",
+							"",
+							"if(i < lenght) { ",
+							"    pm.variables.set(\"queryParameter\", queryParams[i]);",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}{{comments}}?{{queryParameter}}",
+					"host": [
+						"{{host}}{{comments}}"
+					],
+					"query": [
+						{
+							"key": "{{queryParameter}}",
+							"value": null
+						}
+					]
+				},
+				"description": "Obtain a comment filtering by combinations of its name, its email, its id and its postId."
+			},
+			"response": []
+		},
+		{
+			"name": "Insert one comment",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.variables.set(\"postId\", _.random(1, 1000));"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", pm.response.to.have.status(201));",
+							"",
+							"const responseJson = pm.response.json();",
+							"",
+							"pm.test(\"The response contains new comment\", () => {",
+							"",
+							"    pm.expect(responseJson.name).to.be.equal(\"Test Name\");",
+							"    pm.expect(responseJson.email).to.be.equal(\"Test Email\");",
+							"    pm.expect(responseJson.body).to.be.equal(\"This is a test.\");",
+							"    pm.expect(responseJson.postId).to.be.equal(pm.variables.get(\"postId\"));",
+							"    pm.expect(responseJson.id).to.be.equal(501);",
+							"",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"postId\": {{postId}},\n    \"name\": \"Test Name\",\n    \"email\": \"Test Email\",\n    \"body\": \"This is a test.\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}{{comments}}",
+					"host": [
+						"{{host}}{{comments}}"
+					]
+				},
+				"description": "Inserts a comment."
+			},
+			"response": []
+		},
+		{
+			"name": "Edit one comment",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.variables.set(\"postId\", _.random(1, 1000));"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", pm.response.to.have.status(200));",
+							"",
+							"const responseJson = pm.response.json();",
+							"",
+							"pm.test(\"The response contains updated comment\", () => {",
+							"",
+							"    pm.expect(responseJson.name).to.be.equal(\"Test Name\");",
+							"    pm.expect(responseJson.email).to.be.equal(\"Test Email\");",
+							"    pm.expect(responseJson.body).to.be.equal(\"This is a test.\");",
+							"    pm.expect(responseJson.postId).to.be.equal(pm.variables.get(\"postId\"));",
+							"    pm.expect(responseJson.id).to.be.equal(500);",
+							"",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"postId\": {{postId}},\n    \"name\": \"Test Name\",\n    \"email\": \"Test Email\",\n    \"body\": \"This is a test.\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}{{comments}}/500",
+					"host": [
+						"{{host}}{{comments}}"
+					],
+					"path": [
+						"500"
+					]
+				},
+				"description": "Replaces a comment."
+			},
+			"response": []
+		},
+		{
+			"name": "Inline edit one comment (Parameterized)",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var i = 0;",
+							"",
+							"if(pm.variables.has(\"i\")) {",
+							"    i = Number(pm.variables.get(\"i\"))",
+							"} else {",
+							"    pm.variables.set(\"i\", i);   ",
+							"}",
+							"",
+							"const keys = [   \"postId\", ",
+							"                 \"name\", ",
+							"                 \"email\",",
+							"                 \"body\"",
+							"             ];",
+							"",
+							"pm.variables.set(\"keys\", keys);",
+							"",
+							"const lenght = keys.length",
+							"",
+							"if(i < lenght) { ",
+							"    pm.variables.set(\"key\", keys[i]);",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", pm.response.to.have.status(200));",
+							"",
+							"const responseJson = pm.response.json();",
+							"var key = pm.variables.get(\"key\");",
+							"",
+							"pm.test(\"The response contains updated comment\", () => {",
+							"    ",
+							"    pm.expect(responseJson.id).to.be.equal(500);",
+							"",
+							"    if(key===\"postId\") {",
+							"        pm.expect(responseJson.name).to.be.equal(\"ex eaque eum natus\");",
+							"        pm.expect(responseJson.email).to.be.equal(\"Emma@joanny.ca\");",
+							"        pm.expect(responseJson.body).to.be.equal(\"perspiciatis quis doloremque\\nveniam nisi eos velit sed\\nid totam inventore voluptatem laborum et eveniet\\naut aut aut maxime quia temporibus ut omnis\");",
+							"        pm.expect(responseJson.postId).to.be.equal(\"Test\");",
+							"    }",
+							"",
+							"    if(key===\"name\") {",
+							"        pm.expect(responseJson.name).to.be.equal(\"Test\");",
+							"        pm.expect(responseJson.email).to.be.equal(\"Emma@joanny.ca\");",
+							"        pm.expect(responseJson.body).to.be.equal(\"perspiciatis quis doloremque\\nveniam nisi eos velit sed\\nid totam inventore voluptatem laborum et eveniet\\naut aut aut maxime quia temporibus ut omnis\");",
+							"        pm.expect(responseJson.postId).to.be.equal(100);",
+							"    }",
+							"",
+							"    if(key===\"email\") {",
+							"        pm.expect(responseJson.name).to.be.equal(\"ex eaque eum natus\");",
+							"        pm.expect(responseJson.email).to.be.equal(\"Test\");",
+							"        pm.expect(responseJson.body).to.be.equal(\"perspiciatis quis doloremque\\nveniam nisi eos velit sed\\nid totam inventore voluptatem laborum et eveniet\\naut aut aut maxime quia temporibus ut omnis\");",
+							"        pm.expect(responseJson.postId).to.be.equal(100);",
+							"    }",
+							"",
+							"    if(key===\"body\") {",
+							"        pm.expect(responseJson.name).to.be.equal(\"ex eaque eum natus\");",
+							"        pm.expect(responseJson.email).to.be.equal(\"Emma@joanny.ca\");",
+							"        pm.expect(responseJson.body).to.be.equal(\"Test\");",
+							"        pm.expect(responseJson.postId).to.be.equal(100);",
+							"    }",
+							"    ",
+							"});",
+							"",
+							"const i = Number(pm.variables.get(\"i\")) + 1;",
+							"const keys = pm.variables.get(\"keys\");",
+							"const length = keys.length;",
+							"",
+							"if(i < length) {",
+							"    pm.variables.set(\"i\", i);",
+							"    postman.setNextRequest(\"Inline edit one comment (Parameterized)\");",
+							"}",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"{{key}}\": \"Test\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}{{comments}}/500",
+					"host": [
+						"{{host}}{{comments}}"
+					],
+					"path": [
+						"500"
+					]
+				},
+				"description": "Edits a comment postId, name, email and body."
+			},
+			"response": []
+		},
+		{
+			"name": "Delete one comment",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", pm.response.to.have.status(200));",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{host}}{{comments}}/500",
+					"host": [
+						"{{host}}{{comments}}"
+					],
+					"path": [
+						"500"
+					]
+				},
+				"description": "Deletes a comment."
+			},
+			"response": []
+		},
+		{
+			"name": "Get one post comments",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", pm.response.to.have.status(200));",
+							"",
+							"const responseJson = pm.response.json();",
+							"",
+							"pm.test(\"The response is an array with 5 coments\", () => {",
+							"",
+							"    pm.expect(responseJson).to.be.an(\"array\");",
+							"    pm.expect(responseJson.length).to.be.equal(5);",
+							"",
+							"});",
+							"",
+							"pm.test(\"All comments are from this post\", () => {",
+							"    _.each(responseJson, (post) => {",
+							"",
+							"        pm.expect(post.postId).to.be.equal(100)",
+							"        ",
+							"    })",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}{{posts}}/100{{comments}}",
+					"host": [
+						"{{host}}{{posts}}"
+					],
+					"path": [
+						"100{{comments}}"
+					]
+				},
+				"description": "Obtain posts from user."
+			},
+			"response": []
+		},
+		{
+			"name": "Get one comment (404)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404\", pm.response.to.have.status(404));"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}{{comments}}/501",
+					"host": [
+						"{{host}}{{comments}}"
+					],
+					"path": [
+						"501"
+					]
+				},
+				"description": "Try to obtain a comment."
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

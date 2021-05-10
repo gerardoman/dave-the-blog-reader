@@ -1,0 +1,509 @@
+{
+	"info": {
+		"_postman_id": "09ce8280-a7ac-4b6f-b6ed-88e49503b07e",
+		"name": "Albums",
+		"description": "Test album lifecycle from insertion to deletion. ",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get all albums",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", pm.response.to.have.status(200));",
+							"",
+							"const responseJson = pm.response.json();",
+							"",
+							"pm.test(\"The response is an array with 100 elements\", () => {",
+							"",
+							"    pm.expect(responseJson).to.be.an(\"array\");",
+							"    pm.expect(responseJson.length).to.be.equal(100);",
+							"",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}{{albums}}",
+					"host": [
+						"{{host}}{{albums}}"
+					]
+				},
+				"description": "Obtain all existing albums."
+			},
+			"response": []
+		},
+		{
+			"name": "Get one album",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", pm.response.to.have.status(200));",
+							"",
+							"const responseJson = pm.response.json();",
+							"",
+							"pm.test(\"The response contains comment with id 100\", () => {",
+							"",
+							"    pm.expect(responseJson.title).to.be.equal(\"enim repellat iste\");",
+							"    pm.expect(responseJson.userId).to.be.equal(10);",
+							"    pm.expect(responseJson.id).to.be.equal(100);",
+							"",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}{{albums}}/100",
+					"host": [
+						"{{host}}{{albums}}"
+					],
+					"path": [
+						"100"
+					]
+				},
+				"description": "Obtain a comment."
+			},
+			"response": []
+		},
+		{
+			"name": "Get one album (Parameterized)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", pm.response.to.have.status(200));",
+							"",
+							"const responseJson = pm.response.json();",
+							"",
+							"pm.test(\"The response contains only a album (with id 100)\", () => {",
+							"",
+							"    pm.expect(responseJson).to.be.an(\"array\");",
+							"    pm.expect(responseJson.length).to.equal(1);",
+							"    ",
+							"    pm.expect(responseJson[0].title).to.be.equal(\"enim repellat iste\");",
+							"    pm.expect(responseJson[0].userId).to.be.equal(10);",
+							"    pm.expect(responseJson[0].id).to.be.equal(100);",
+							"",
+							"});",
+							"",
+							"const i = Number(pm.variables.get(\"i\")) + 1;",
+							"const queryParams = pm.variables.get(\"queryParameters\");",
+							"const length = queryParams.length;",
+							"",
+							"if(i < length) {",
+							"    pm.variables.set(\"i\", i);",
+							"    postman.setNextRequest(\"Get one album (Parameterized)\");",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var i = 0;",
+							"",
+							"if(pm.variables.has(\"i\")) {",
+							"    i = Number(pm.variables.get(\"i\"))",
+							"} else {",
+							"    pm.variables.set(\"i\", i);   ",
+							"}",
+							"",
+							"const queryParams = [   \"id=100\", ",
+							"                        \"title=enim%20repellat%20iste\",",
+							"                        \"userId=10&id=100\",",
+							"                        \"userId=10&id=100&title=enim%20repellat%20iste\"",
+							"                    ];",
+							"",
+							"pm.variables.set(\"queryParameters\", queryParams);",
+							"",
+							"const lenght = queryParams.length",
+							"",
+							"if(i < lenght) { ",
+							"    pm.variables.set(\"queryParameter\", queryParams[i]);",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}{{albums}}?{{queryParameter}}",
+					"host": [
+						"{{host}}{{albums}}"
+					],
+					"query": [
+						{
+							"key": "{{queryParameter}}",
+							"value": null
+						}
+					]
+				},
+				"description": "Obtain a album filtering by combinations of its title and its userId."
+			},
+			"response": []
+		},
+		{
+			"name": "Insert one album",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.variables.set(\"userId\", _.random(1, 1000));"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", pm.response.to.have.status(201));",
+							"",
+							"const responseJson = pm.response.json();",
+							"",
+							"pm.test(\"The response contains new album\", () => {",
+							"",
+							"    pm.expect(responseJson.title).to.be.equal(\"Test Title\");",
+							"    pm.expect(responseJson.userId).to.be.equal(pm.variables.get(\"userId\"));",
+							"    pm.expect(responseJson.id).to.be.equal(101);",
+							"",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"userId\": {{userId}},\n    \"title\": \"Test Title\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}{{albums}}",
+					"host": [
+						"{{host}}{{albums}}"
+					]
+				},
+				"description": "Inserts an album."
+			},
+			"response": []
+		},
+		{
+			"name": "Edit one album",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.variables.set(\"userId\", _.random(1, 1000));"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", pm.response.to.have.status(200));",
+							"",
+							"const responseJson = pm.response.json();",
+							"",
+							"pm.test(\"The response contains updated album\", () => {",
+							"",
+							"    pm.expect(responseJson.title).to.be.equal(\"Test Title\");",
+							"    pm.expect(responseJson.userId).to.be.equal(pm.variables.get(\"userId\"));",
+							"    pm.expect(responseJson.id).to.be.equal(100);",
+							"",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"userId\": {{userId}},\n    \"title\": \"Test Title\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}{{albums}}/100",
+					"host": [
+						"{{host}}{{albums}}"
+					],
+					"path": [
+						"100"
+					]
+				},
+				"description": "Replaces a album."
+			},
+			"response": []
+		},
+		{
+			"name": "Inline edit one album (Parameterized)",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var i = 0;",
+							"",
+							"if(pm.variables.has(\"i\")) {",
+							"    i = Number(pm.variables.get(\"i\"))",
+							"} else {",
+							"    pm.variables.set(\"i\", i);   ",
+							"}",
+							"",
+							"const keys = [   \"userId\", ",
+							"                 \"title\"",
+							"             ];",
+							"",
+							"pm.variables.set(\"keys\", keys);",
+							"",
+							"const lenght = keys.length",
+							"",
+							"if(i < lenght) { ",
+							"    pm.variables.set(\"key\", keys[i]);",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", pm.response.to.have.status(200));",
+							"",
+							"const responseJson = pm.response.json();",
+							"var key = pm.variables.get(\"key\");",
+							"",
+							"pm.test(\"The response contains updated album\", () => {",
+							"    ",
+							"    pm.expect(responseJson.id).to.be.equal(100);",
+							"",
+							"    if(key===\"userId\") {",
+							"        pm.expect(responseJson.title).to.be.equal(\"enim repellat iste\");",
+							"        pm.expect(responseJson.userId).to.be.equal(\"Test\");",
+							"    }",
+							"",
+							"    if(key===\"title\") {",
+							"        pm.expect(responseJson.title).to.be.equal(\"Test\");",
+							"        pm.expect(responseJson.userId).to.be.equal(10);",
+							"    }",
+							"",
+							"});",
+							"",
+							"const i = Number(pm.variables.get(\"i\")) + 1;",
+							"const keys = pm.variables.get(\"keys\");",
+							"const length = keys.length;",
+							"",
+							"if(i < length) {",
+							"    pm.variables.set(\"i\", i);",
+							"    postman.setNextRequest(\"Inline edit one album (Parameterized)\");",
+							"}",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"{{key}}\": \"Test\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}{{albums}}/100",
+					"host": [
+						"{{host}}{{albums}}"
+					],
+					"path": [
+						"100"
+					]
+				},
+				"description": "Edits a album userId and title."
+			},
+			"response": []
+		},
+		{
+			"name": "Delete one album",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", pm.response.to.have.status(200));",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{host}}{{albums}}/100",
+					"host": [
+						"{{host}}{{albums}}"
+					],
+					"path": [
+						"100"
+					]
+				},
+				"description": "Deletes a comment."
+			},
+			"response": []
+		},
+		{
+			"name": "Get one user albums",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", pm.response.to.have.status(200));",
+							"",
+							"const responseJson = pm.response.json();",
+							"",
+							"pm.test(\"The response is an array with 10 albums\", () => {",
+							"",
+							"    pm.expect(responseJson).to.be.an(\"array\");",
+							"    pm.expect(responseJson.length).to.be.equal(10);",
+							"",
+							"});",
+							"",
+							"pm.test(\"All albums are from this user\", () => {",
+							"    _.each(responseJson, (post) => {",
+							"",
+							"        pm.expect(post.userId).to.be.equal(10)",
+							"        ",
+							"    })",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}{{users}}/10{{albums}}",
+					"host": [
+						"{{host}}{{users}}"
+					],
+					"path": [
+						"10{{albums}}"
+					]
+				},
+				"description": "Obtain albums from user."
+			},
+			"response": []
+		},
+		{
+			"name": "Get one album (404)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404\", pm.response.to.have.status(404));"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}{{albums}}/101",
+					"host": [
+						"{{host}}{{albums}}"
+					],
+					"path": [
+						"101"
+					]
+				},
+				"description": "Try to obtain a comment."
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

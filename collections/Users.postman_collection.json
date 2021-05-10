@@ -1,0 +1,664 @@
+{
+	"info": {
+		"_postman_id": "3f010bca-39bf-4b58-a39f-68e6968f962c",
+		"name": "Users",
+		"description": "Test user lifecycle from insertion to deletion. ",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get all users",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", pm.response.to.have.status(200));",
+							"",
+							"const responseJson = pm.response.json();",
+							"",
+							"pm.test(\"The response is an array with 10 elements\", () => {",
+							"",
+							"    pm.expect(responseJson).to.be.an(\"array\");",
+							"    pm.expect(responseJson.length).to.be.equal(10);",
+							"",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}{{users}}",
+					"host": [
+						"{{host}}{{users}}"
+					]
+				},
+				"description": "Obtain all existing users."
+			},
+			"response": []
+		},
+		{
+			"name": "Get one user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", pm.response.to.have.status(200));",
+							"",
+							"const responseJson = pm.response.json();",
+							"",
+							"pm.test(\"The response contains user with id 10\", () => {",
+							"",
+							"    pm.expect(responseJson.name).to.be.equal(\"Clementina DuBuque\");",
+							"    pm.expect(responseJson.username).to.be.equal(\"Moriah.Stanton\");",
+							"    pm.expect(responseJson.email).to.be.equal(\"Rey.Padberg@karina.biz\");",
+							"",
+							"    const addressJson = responseJson.address;",
+							"    pm.expect(addressJson.street).to.be.equal(\"Kattie Turnpike\");",
+							"    pm.expect(addressJson.suite).to.be.equal(\"Suite 198\");",
+							"    pm.expect(addressJson.city).to.be.equal(\"Lebsackbury\");",
+							"    pm.expect(addressJson.zipcode).to.be.equal(\"31428-2261\");",
+							"",
+							"    const geoJson = addressJson.geo;",
+							"    pm.expect(geoJson.lat).to.be.equal(\"-38.2386\");",
+							"    pm.expect(geoJson.lng).to.be.equal(\"57.2232\");",
+							"",
+							"    pm.expect(responseJson.phone).to.be.equal(\"024-648-3804\");",
+							"    pm.expect(responseJson.website).to.be.equal(\"ambrose.net\");",
+							"",
+							"    const companyJson = responseJson.company;",
+							"    pm.expect(companyJson.name).to.be.equal(\"Hoeger LLC\");",
+							"    pm.expect(companyJson.catchPhrase).to.be.equal(\"Centralized empowering task-force\");",
+							"    pm.expect(companyJson.bs).to.be.equal(\"target end-to-end models\");",
+							"",
+							"    pm.expect(responseJson.id).to.be.equal(10);",
+							"",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}{{users}}/10",
+					"host": [
+						"{{host}}{{users}}"
+					],
+					"path": [
+						"10"
+					]
+				},
+				"description": "Obtain a user."
+			},
+			"response": []
+		},
+		{
+			"name": "Get one user (Parameterized)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", pm.response.to.have.status(200));",
+							"",
+							"const responseJson = pm.response.json();",
+							"",
+							"pm.test(\"The response contains only a user (with id 10)\", () => {",
+							"",
+							"    pm.expect(responseJson).to.be.an(\"array\");",
+							"    pm.expect(responseJson.length).to.equal(1);",
+							"    ",
+							"    pm.expect(responseJson[0].name).to.be.equal(\"Clementina DuBuque\");",
+							"    pm.expect(responseJson[0].username).to.be.equal(\"Moriah.Stanton\");",
+							"    pm.expect(responseJson[0].email).to.be.equal(\"Rey.Padberg@karina.biz\");",
+							"",
+							"    const addressJson = responseJson[0].address;",
+							"    pm.expect(addressJson.street).to.be.equal(\"Kattie Turnpike\");",
+							"    pm.expect(addressJson.suite).to.be.equal(\"Suite 198\");",
+							"    pm.expect(addressJson.city).to.be.equal(\"Lebsackbury\");",
+							"    pm.expect(addressJson.zipcode).to.be.equal(\"31428-2261\");",
+							"",
+							"    const geoJson = addressJson.geo;",
+							"    pm.expect(geoJson.lat).to.be.equal(\"-38.2386\");",
+							"    pm.expect(geoJson.lng).to.be.equal(\"57.2232\");",
+							"",
+							"    pm.expect(responseJson[0].phone).to.be.equal(\"024-648-3804\");",
+							"    pm.expect(responseJson[0].website).to.be.equal(\"ambrose.net\");",
+							"",
+							"    const companyJson = responseJson[0].company;",
+							"    pm.expect(companyJson.name).to.be.equal(\"Hoeger LLC\");",
+							"    pm.expect(companyJson.catchPhrase).to.be.equal(\"Centralized empowering task-force\");",
+							"    pm.expect(companyJson.bs).to.be.equal(\"target end-to-end models\");",
+							"",
+							"    pm.expect(responseJson[0].id).to.be.equal(10);",
+							"",
+							"});",
+							"",
+							"const i = Number(pm.variables.get(\"i\")) + 1;",
+							"const queryParams = pm.variables.get(\"queryParameters\");",
+							"const length = queryParams.length;",
+							"",
+							"if(i < length) {",
+							"    pm.variables.set(\"i\", i);",
+							"    postman.setNextRequest(\"Get one user (Parameterized)\");",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var i = 0;",
+							"",
+							"if(pm.variables.has(\"i\")) {",
+							"    i = Number(pm.variables.get(\"i\"))",
+							"} else {",
+							"    pm.variables.set(\"i\", i);   ",
+							"}",
+							"",
+							"const queryParams = [   \"id=10\", ",
+							"                        \"name=Clementina%20DuBuque\", ",
+							"                        \"username=Moriah.Stanton\",",
+							"                        \"email=Rey.Padberg@karina.biz\", ",
+							"                        \"phone=024-648-3804\", ",
+							"                        \"website=ambrose.net\", ",
+							"                        \"id=10&name=Clementina%20DuBuque\",",
+							"                        \"name=Clementina%20DuBuque&email=Rey.Padberg@karina.biz\",",
+							"                        \"id=10&name=Clementina%20DuBuque&username=Moriah.Stanton\",",
+							"                        \"id=10&name=Clementina%20DuBuque&username=Moriah.Stanton&email=Rey.Padberg@karina.biz\",",
+							"                        \"id=10&name=Clementina%20DuBuque&username=Moriah.Stanton&email=Rey.Padberg@karina.biz&phone=024-648-3804\",",
+							"                        \"id=10&name=Clementina%20DuBuque&username=Moriah.Stanton&email=Rey.Padberg@karina.biz&phone=024-648-3804&website=ambrose.net\"",
+							"                    ];",
+							"",
+							"pm.variables.set(\"queryParameters\", queryParams);",
+							"",
+							"const lenght = queryParams.length",
+							"",
+							"if(i < lenght) { ",
+							"    pm.variables.set(\"queryParameter\", queryParams[i]);",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}{{users}}?{{queryParameter}}",
+					"host": [
+						"{{host}}{{users}}"
+					],
+					"query": [
+						{
+							"key": "{{queryParameter}}",
+							"value": null
+						}
+					]
+				},
+				"description": "Obtain a useer filtering by combinations of its name, its usrname, its email, its phone, its weebsite and its id."
+			},
+			"response": []
+		},
+		{
+			"name": "Insert one user",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", pm.response.to.have.status(201));",
+							"",
+							"const responseJson = pm.response.json();",
+							"",
+							"pm.test(\"The response contains new user\", () => {",
+							"",
+							"    pm.expect(responseJson.name).to.be.equal(\"Test Name\");",
+							"    pm.expect(responseJson.username).to.be.equal(\"Test Username\");",
+							"    pm.expect(responseJson.email).to.be.equal(\"Test Email\");",
+							"",
+							"    const addressJson = responseJson.address;",
+							"    pm.expect(addressJson.street).to.be.equal(\"Test Street\");",
+							"    pm.expect(addressJson.suite).to.be.equal(\"Test Suite\");",
+							"    pm.expect(addressJson.city).to.be.equal(\"Test City\");",
+							"    pm.expect(addressJson.zipcode).to.be.equal(\"Test Zipcode\");",
+							"",
+							"    const geoJson = addressJson.geo;",
+							"    pm.expect(geoJson.lat).to.be.equal(\"Test Lat\");",
+							"    pm.expect(geoJson.lng).to.be.equal(\"Test Lng\");",
+							"",
+							"    pm.expect(responseJson.phone).to.be.equal(\"Test Phone\");",
+							"    pm.expect(responseJson.website).to.be.equal(\"Test Website\");",
+							"",
+							"    const companyJson = responseJson.company;",
+							"    pm.expect(companyJson.name).to.be.equal(\"Test Name\");",
+							"    pm.expect(companyJson.catchPhrase).to.be.equal(\"Test Catch Phrase\");",
+							"    pm.expect(companyJson.bs).to.be.equal(\"Test Bs\");",
+							"",
+							"    pm.expect(responseJson.id).to.be.equal(11);",
+							"",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": 10,\n    \"name\": \"Test Name\",\n    \"username\": \"Test Username\",\n    \"email\": \"Test Email\",\n    \"address\": {\n        \"street\": \"Test Street\",\n        \"suite\": \"Test Suite\",\n        \"city\": \"Test City\",\n        \"zipcode\": \"Test Zipcode\",\n        \"geo\": {\n            \"lat\": \"Test Lat\",\n            \"lng\": \"Test Lng\"\n        }\n    },\n    \"phone\": \"Test Phone\",\n    \"website\": \"Test Website\",\n    \"company\": {\n        \"name\": \"Test Name\",\n        \"catchPhrase\": \"Test Catch Phrase\",\n        \"bs\": \"Test Bs\"\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}{{users}}",
+					"host": [
+						"{{host}}{{users}}"
+					]
+				},
+				"description": "Inserts a user."
+			},
+			"response": []
+		},
+		{
+			"name": "Edit one user",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", pm.response.to.have.status(200));",
+							"",
+							"const responseJson = pm.response.json();",
+							"",
+							"pm.test(\"The response contains updated user\", () => {",
+							"",
+							"    pm.expect(responseJson.name).to.be.equal(\"Test Name\");",
+							"    pm.expect(responseJson.username).to.be.equal(\"Test Username\");",
+							"    pm.expect(responseJson.email).to.be.equal(\"Test Email\");",
+							"",
+							"    const addressJson = responseJson.address;",
+							"    pm.expect(addressJson.street).to.be.equal(\"Test Street\");",
+							"    pm.expect(addressJson.suite).to.be.equal(\"Test Suite\");",
+							"    pm.expect(addressJson.city).to.be.equal(\"Test City\");",
+							"    pm.expect(addressJson.zipcode).to.be.equal(\"Test Zipcode\");",
+							"",
+							"    const geoJson = addressJson.geo;",
+							"    pm.expect(geoJson.lat).to.be.equal(\"Test Lat\");",
+							"    pm.expect(geoJson.lng).to.be.equal(\"Test Lng\");",
+							"",
+							"    pm.expect(responseJson.phone).to.be.equal(\"Test Phone\");",
+							"    pm.expect(responseJson.website).to.be.equal(\"Test Website\");",
+							"",
+							"    const companyJson = responseJson.company;",
+							"    pm.expect(companyJson.name).to.be.equal(\"Test Name\");",
+							"    pm.expect(companyJson.catchPhrase).to.be.equal(\"Test Catch Phrase\");",
+							"    pm.expect(companyJson.bs).to.be.equal(\"Test Bs\");",
+							"",
+							"    pm.expect(responseJson.id).to.be.equal(10);",
+							"",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": 10,\n    \"name\": \"Test Name\",\n    \"username\": \"Test Username\",\n    \"email\": \"Test Email\",\n    \"address\": {\n        \"street\": \"Test Street\",\n        \"suite\": \"Test Suite\",\n        \"city\": \"Test City\",\n        \"zipcode\": \"Test Zipcode\",\n        \"geo\": {\n            \"lat\": \"Test Lat\",\n            \"lng\": \"Test Lng\"\n        }\n    },\n    \"phone\": \"Test Phone\",\n    \"website\": \"Test Website\",\n    \"company\": {\n        \"name\": \"Test Name\",\n        \"catchPhrase\": \"Test Catch Phrase\",\n        \"bs\": \"Test Bs\"\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}{{users}}/10",
+					"host": [
+						"{{host}}{{users}}"
+					],
+					"path": [
+						"10"
+					]
+				},
+				"description": "Replaces a comment."
+			},
+			"response": []
+		},
+		{
+			"name": "Inline edit one user (Parameterized)",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var i = 0;",
+							"",
+							"if(pm.variables.has(\"i\")) {",
+							"    i = Number(pm.variables.get(\"i\"))",
+							"} else {",
+							"    pm.variables.set(\"i\", i);   ",
+							"}",
+							"",
+							"const keys = [   \"name\", ",
+							"                 \"username\", ",
+							"                 \"email\",",
+							"                 \"phone\",",
+							"                 \"website\"",
+							"             ];",
+							"",
+							"pm.variables.set(\"keys\", keys);",
+							"",
+							"const lenght = keys.length",
+							"",
+							"if(i < lenght) { ",
+							"    pm.variables.set(\"key\", keys[i]);",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", pm.response.to.have.status(200));",
+							"",
+							"const responseJson = pm.response.json();",
+							"var key = pm.variables.get(\"key\");",
+							"",
+							"pm.test(\"The response contains updated user\", () => {",
+							"    ",
+							"    pm.expect(responseJson.id).to.be.equal(10);",
+							"",
+							"    if(key===\"name\") {",
+							"        pm.expect(responseJson.name).to.be.equal(\"Test\");",
+							"        pm.expect(responseJson.username).to.be.equal(\"Moriah.Stanton\");",
+							"        pm.expect(responseJson.email).to.be.equal(\"Rey.Padberg@karina.biz\");",
+							"",
+							"        const addressJson = responseJson.address;",
+							"        pm.expect(addressJson.street).to.be.equal(\"Kattie Turnpike\");",
+							"        pm.expect(addressJson.suite).to.be.equal(\"Suite 198\");",
+							"        pm.expect(addressJson.city).to.be.equal(\"Lebsackbury\");",
+							"        pm.expect(addressJson.zipcode).to.be.equal(\"31428-2261\");",
+							"",
+							"        const geoJson = addressJson.geo;",
+							"        pm.expect(geoJson.lat).to.be.equal(\"-38.2386\");",
+							"        pm.expect(geoJson.lng).to.be.equal(\"57.2232\");",
+							"",
+							"        pm.expect(responseJson.phone).to.be.equal(\"024-648-3804\");",
+							"        pm.expect(responseJson.website).to.be.equal(\"ambrose.net\");",
+							"",
+							"        const companyJson = responseJson.company;",
+							"        pm.expect(companyJson.name).to.be.equal(\"Hoeger LLC\");",
+							"        pm.expect(companyJson.catchPhrase).to.be.equal(\"Centralized empowering task-force\");",
+							"        pm.expect(companyJson.bs).to.be.equal(\"target end-to-end models\");",
+							"    }",
+							"",
+							"    if(key===\"username\") {",
+							"        pm.expect(responseJson.name).to.be.equal(\"Clementina DuBuque\");",
+							"        pm.expect(responseJson.username).to.be.equal(\"Test\");",
+							"        pm.expect(responseJson.email).to.be.equal(\"Rey.Padberg@karina.biz\");",
+							"",
+							"        const addressJson = responseJson.address;",
+							"        pm.expect(addressJson.street).to.be.equal(\"Kattie Turnpike\");",
+							"        pm.expect(addressJson.suite).to.be.equal(\"Suite 198\");",
+							"        pm.expect(addressJson.city).to.be.equal(\"Lebsackbury\");",
+							"        pm.expect(addressJson.zipcode).to.be.equal(\"31428-2261\");",
+							"",
+							"        const geoJson = addressJson.geo;",
+							"        pm.expect(geoJson.lat).to.be.equal(\"-38.2386\");",
+							"        pm.expect(geoJson.lng).to.be.equal(\"57.2232\");",
+							"",
+							"        pm.expect(responseJson.phone).to.be.equal(\"024-648-3804\");",
+							"        pm.expect(responseJson.website).to.be.equal(\"ambrose.net\");",
+							"",
+							"        const companyJson = responseJson.company;",
+							"        pm.expect(companyJson.name).to.be.equal(\"Hoeger LLC\");",
+							"        pm.expect(companyJson.catchPhrase).to.be.equal(\"Centralized empowering task-force\");",
+							"        pm.expect(companyJson.bs).to.be.equal(\"target end-to-end models\");",
+							"    }",
+							"",
+							"    if(key===\"email\") {",
+							"        pm.expect(responseJson.name).to.be.equal(\"Clementina DuBuque\");",
+							"        pm.expect(responseJson.username).to.be.equal(\"Moriah.Stanton\");",
+							"        pm.expect(responseJson.email).to.be.equal(\"Test\");",
+							"",
+							"        const addressJson = responseJson.address;",
+							"        pm.expect(addressJson.street).to.be.equal(\"Kattie Turnpike\");",
+							"        pm.expect(addressJson.suite).to.be.equal(\"Suite 198\");",
+							"        pm.expect(addressJson.city).to.be.equal(\"Lebsackbury\");",
+							"        pm.expect(addressJson.zipcode).to.be.equal(\"31428-2261\");",
+							"",
+							"        const geoJson = addressJson.geo;",
+							"        pm.expect(geoJson.lat).to.be.equal(\"-38.2386\");",
+							"        pm.expect(geoJson.lng).to.be.equal(\"57.2232\");",
+							"",
+							"        pm.expect(responseJson.phone).to.be.equal(\"024-648-3804\");",
+							"        pm.expect(responseJson.website).to.be.equal(\"ambrose.net\");",
+							"",
+							"        const companyJson = responseJson.company;",
+							"        pm.expect(companyJson.name).to.be.equal(\"Hoeger LLC\");",
+							"        pm.expect(companyJson.catchPhrase).to.be.equal(\"Centralized empowering task-force\");",
+							"        pm.expect(companyJson.bs).to.be.equal(\"target end-to-end models\");",
+							"    }",
+							"",
+							"    if(key===\"phone\") {",
+							"        pm.expect(responseJson.name).to.be.equal(\"Clementina DuBuque\");",
+							"        pm.expect(responseJson.username).to.be.equal(\"Moriah.Stanton\");",
+							"        pm.expect(responseJson.email).to.be.equal(\"Rey.Padberg@karina.biz\");",
+							"",
+							"        const addressJson = responseJson.address;",
+							"        pm.expect(addressJson.street).to.be.equal(\"Kattie Turnpike\");",
+							"        pm.expect(addressJson.suite).to.be.equal(\"Suite 198\");",
+							"        pm.expect(addressJson.city).to.be.equal(\"Lebsackbury\");",
+							"        pm.expect(addressJson.zipcode).to.be.equal(\"31428-2261\");",
+							"",
+							"        const geoJson = addressJson.geo;",
+							"        pm.expect(geoJson.lat).to.be.equal(\"-38.2386\");",
+							"        pm.expect(geoJson.lng).to.be.equal(\"57.2232\");",
+							"",
+							"        pm.expect(responseJson.phone).to.be.equal(\"Test\");",
+							"        pm.expect(responseJson.website).to.be.equal(\"ambrose.net\");",
+							"",
+							"        const companyJson = responseJson.company;",
+							"        pm.expect(companyJson.name).to.be.equal(\"Hoeger LLC\");",
+							"        pm.expect(companyJson.catchPhrase).to.be.equal(\"Centralized empowering task-force\");",
+							"        pm.expect(companyJson.bs).to.be.equal(\"target end-to-end models\");",
+							"    }",
+							"",
+							"    if(key===\"website\") {",
+							"        pm.expect(responseJson.name).to.be.equal(\"Clementina DuBuque\");",
+							"        pm.expect(responseJson.username).to.be.equal(\"Moriah.Stanton\");",
+							"        pm.expect(responseJson.email).to.be.equal(\"Rey.Padberg@karina.biz\");",
+							"",
+							"        const addressJson = responseJson.address;",
+							"        pm.expect(addressJson.street).to.be.equal(\"Kattie Turnpike\");",
+							"        pm.expect(addressJson.suite).to.be.equal(\"Suite 198\");",
+							"        pm.expect(addressJson.city).to.be.equal(\"Lebsackbury\");",
+							"        pm.expect(addressJson.zipcode).to.be.equal(\"31428-2261\");",
+							"",
+							"        const geoJson = addressJson.geo;",
+							"        pm.expect(geoJson.lat).to.be.equal(\"-38.2386\");",
+							"        pm.expect(geoJson.lng).to.be.equal(\"57.2232\");",
+							"",
+							"        pm.expect(responseJson.phone).to.be.equal(\"024-648-3804\");",
+							"        pm.expect(responseJson.website).to.be.equal(\"Test\");",
+							"",
+							"        const companyJson = responseJson.company;",
+							"        pm.expect(companyJson.name).to.be.equal(\"Hoeger LLC\");",
+							"        pm.expect(companyJson.catchPhrase).to.be.equal(\"Centralized empowering task-force\");",
+							"        pm.expect(companyJson.bs).to.be.equal(\"target end-to-end models\");",
+							"    }",
+							"    ",
+							"});",
+							"",
+							"const i = Number(pm.variables.get(\"i\")) + 1;",
+							"const keys = pm.variables.get(\"keys\");",
+							"const length = keys.length;",
+							"",
+							"if(i < length) {",
+							"    pm.variables.set(\"i\", i);",
+							"    postman.setNextRequest(\"Inline edit one user (Parameterized)\");",
+							"}",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"{{key}}\": \"Test\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}{{users}}/10",
+					"host": [
+						"{{host}}{{users}}"
+					],
+					"path": [
+						"10"
+					]
+				},
+				"description": "Edits a user name, username, email, phone and website."
+			},
+			"response": []
+		},
+		{
+			"name": "Delete one user",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", pm.response.to.have.status(200));",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{host}}{{users}}/10",
+					"host": [
+						"{{host}}{{users}}"
+					],
+					"path": [
+						"10"
+					]
+				},
+				"description": "Deletes a user."
+			},
+			"response": []
+		},
+		{
+			"name": "Get one user (404)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404\", pm.response.to.have.status(404));"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}{{users}}/11",
+					"host": [
+						"{{host}}{{users}}"
+					],
+					"path": [
+						"11"
+					]
+				},
+				"description": "Try to obtain a user."
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
