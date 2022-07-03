@@ -8,7 +8,6 @@ pipeline {
         stage('Run Newman Tests') {
             steps {
                 sh 'npm install -g newman-reporter-htmlextra'
-                sh 'rm -r newman'
                 sh 'newman run collections/Find-other-posts-by-the-author.postman_collection.json -e environment/dave-the-blog-reader.postman_environment.json --suppress-exit-code 1 --reporters cli,htmlextra –-reporter-html-export "newman/Find-other-posts-by-the-author.html"'
                 sh 'newman run collections/Posts.postman_collection.json -e environment/dave-the-blog-reader.postman_environment.json --suppress-exit-code 1 --reporters cli,htmlextra –-reporter-html-export "newman/Posts.html"'
                 sh 'newman run collections/Comments.postman_collection.json -e environment/dave-the-blog-reader.postman_environment.json --suppress-exit-code 1 --reporters cli,htmlextra –-reporter-html-export "newman/Comments.html"'
