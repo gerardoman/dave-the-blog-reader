@@ -15,6 +15,7 @@ pipeline {
                 sh 'newman run collections/Photos.postman_collection.json -e environment/dave-the-blog-reader.postman_environment.json --suppress-exit-code 1 --reporters cli,htmlextra –-reporter-html-export "newman/Photos.html"'
                 sh 'newman run collections/Todos.postman_collection.json -e environment/dave-the-blog-reader.postman_environment.json --suppress-exit-code 1 --reporters cli,htmlextra –-reporter-html-export "newman/Todos.html"'
                 sh 'newman run collections/Users.postman_collection.json -e environment/dave-the-blog-reader.postman_environment.json --suppress-exit-code 1 --reporters cli,htmlextra –-reporter-html-export "newman/Users.html"'
+                sh 'newman run collections/Users.postman_collection.json -e environment/dave-the-blog-reader.postman_environment.json --suppress-exit-code 1 --reporters cli,junit --reporter-junit-export "newman/Users.xml"'
             }
         }
         stage('Publish Newman Reports') {
@@ -83,6 +84,17 @@ pipeline {
 
             }
         }
+        
+                stage('Run Junit Tests') {
+            steps {
+                junit 'newman/Users.xml'
+
+            }
+        }
+        
+        
+        
+        
         stage('Publish JMeter Reports') {
             steps {
                 perfReport filterRegex: '', relativeFailedThresholdNegative: 1.2, relativeFailedThresholdPositive: 1.89, relativeUnstableThresholdNegative: 1.8, relativeUnstableThresholdPositive: 1.5, sourceDataFiles: 'results.csv'
